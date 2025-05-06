@@ -114,3 +114,45 @@ void solve() {
 }
 
 ```
+
+## Analysis
+
+The function `solve()` scans a C‑string `s` (length `n`) and finds the longest substring (“window”) containing **exactly two distinct characters**, each occurring the **same number of times**. It works as follows:
+
+1. **Try every window length** `j = 1…n–1`.  
+2. **Slide** a window of length `j+1` from `l=0, r=j` up to `r=n–1`.  
+3. **Count frequencies** inside the current window by:
+   - Zeroing out a fixed array `freq[256]`.  
+   - Scanning the window (`i = l…r`) and doing `freq[(unsigned char)s[i]]++`.  
+4. **Scan** `freq[ ]` (size 256) to check if there are exactly two nonzero entries with equal counts.  
+5. **Update** `ans` if the window is “balanced.”
+
+---
+
+### Time Complexity
+
+- **Outer loop** over window lengths `j`: **O(n)**  
+- **Sliding loop** for each `j`: **O(n)**  
+- **Per-window work**:
+  - Counting window characters: **O(j)**
+  - Scanning `freq[256]`: **O(1)** (constant)
+
+\[
+\sum_{j=1}^{n-1} \Bigl[\,O(n)\times(O(j)+O(1))\Bigr]
+\;=\;\sum_{j=1}^{n-1}O(n\cdot j)
+\;=\;O\bigl(n\cdot\tfrac{n(n-1)}{2}\bigr)
+\;=\;O(n^3)
+\]
+
+**Time Complexity:** **O(n³)**
+
+---
+
+### Space Complexity
+
+- **Input string** `s`: **O(n)**  
+- **Frequency array** `freq[256]`: **O(1)** (constant)  
+- **Scalars** (`ans, j, l, r, count, val1, val2, i`): **O(1)**  
+
+**Space Complexity:** **O(n)** (dominated by the input string)  
+
