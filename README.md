@@ -121,6 +121,7 @@ The function `solve()` scans a C‑string `s` (length `n`) and finds the longest
 
 1. **Try every window length** `j = 1…n–1`.  
 2. **Slide** a window of length `j+1` from `l=0, r=j` up to `r=n–1`.
+    here is a simulation for sliding window. 
    ![Sliding‑Window Demo](SlidingSimulation.gif)
 
 4. **Count frequencies** inside the current window by:
