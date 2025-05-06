@@ -61,3 +61,56 @@ Function solve:
     return ans;
     // print the ans, it contains the maximum length of Balanced String.
 } ```
+
+
+## Implementation with c language.
+```c
+
+int max (int a, int b) {
+    return a > b ? a : b;
+}
+
+void solve() {
+    const int max_size = 1e5;
+    char s[max_size]; // init char array.
+    scanf("%s", s); // read input string.
+    int n = strlen(s); // get the length of the string.
+
+    int ans = 0; // init variable with minimum possible answer.
+    for (int j = 1; j < n; j++) { // loop to try all lengthes from 1 to n
+        int l = 0, r = j; // l --> (left) r --> (right) boundary of the substring.
+        while (r < n) { // Move the window (subString) along the whole string.
+            int freq[256] = {0}; // init array with size maximum ASCII Code.
+
+            for (int i = l; i <= r; i++) { // loop inside the current window (subString)
+                freq[s[i]]++;
+            }
+
+            int count = 0, val1 = 0, val2 = 0;
+            // init three var, count to count the unique letters.
+            // val1 to save the frequency of first char.
+            // val2 to save the frequency of second char.
+            for (int i = 0; i < 256; i++) { // loop inside the frequency array.
+                if (freq[i]) {
+                    count++; // find new char
+                    if (count == 1) // first char
+                        val1 = freq[i]; // Save character repetition
+                    else if (count == 2) // second char
+                        val2 = freq[i]; // Save character repetition
+                    else // third char, it make the window not valid, break.
+                        break;
+                }
+            }
+
+            if (count == 2) { // this means it contain only two diff letter.
+                if (val1 == val2) { // This means that their frequency is equal.
+                    ans = max (ans, r - l + 1); // maximuze the answer.
+                }
+            }
+            r++; l++; // increament the left and right to move the window.
+        }
+    }
+    printf("%d\n", ans); // print answer.
+}
+
+```
