@@ -155,6 +155,3 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 
 **Space Complexity:** **O(n)** (dominated by the input string)  
 
-
-![Uploading 1_lcfE6u6wcUj7qxVY34Zidw.gif…]()
-
