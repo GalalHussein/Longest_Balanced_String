@@ -137,12 +137,11 @@ The function `solve()` scans a C‑string `s` (length `n`) and finds the longest
   - Counting window characters: **O(j)**
   - Scanning `freq[256]`: **O(1)** (constant)
 
-\[
-\sum_{j=1}^{n-1} \Bigl[\,O(n)\times(O(j)+O(1))\Bigr]
-\;=\;\sum_{j=1}^{n-1}O(n\cdot j)
-\;=\;O\bigl(n\cdot\tfrac{n(n-1)}{2}\bigr)
-\;=\;O(n^3)
-\]
+Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
+  = Sum over j=1..n-1 of O(n*j)
+  = O( n * (n(n-1)/2) )
+  = O(n^3)
+
 
 **Time Complexity:** **O(n³)**
 
