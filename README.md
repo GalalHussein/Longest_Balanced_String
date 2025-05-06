@@ -154,6 +154,7 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 - **Scalars** (`ans, j, l, r, count, val1, val2, i`): **O(1)**  
 
 **Space Complexity:** **O(n)** (dominated by the input string)  
-![Sliding‑Window Demonstration](assets/sliding_window.gif)
 
+
+![Uploading 1_lcfE6u6wcUj7qxVY34Zidw.gif…]()
 
