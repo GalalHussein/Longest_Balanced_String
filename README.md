@@ -1,4 +1,4 @@
-# Longest Balanced String Task (cs helwan 2025).
+# Longest Balanced String Task (CS helwan 2025).
 
 ## psudo code
 ```
