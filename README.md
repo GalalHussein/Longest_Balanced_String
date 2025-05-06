@@ -120,12 +120,14 @@ void solve() {
 The function `solve()` scans a C‑string `s` (length `n`) and finds the longest substring (“window”) containing **exactly two distinct characters**, each occurring the **same number of times**. It works as follows:
 
 1. **Try every window length** `j = 1…n–1`.  
-2. **Slide** a window of length `j+1` from `l=0, r=j` up to `r=n–1`.  
-3. **Count frequencies** inside the current window by:
+2. **Slide** a window of length `j+1` from `l=0, r=j` up to `r=n–1`.
+   ![Sliding‑Window Demo](SlidingSimulation.gif)
+
+4. **Count frequencies** inside the current window by:
    - Zeroing out a fixed array `freq[256]`.  
    - Scanning the window (`i = l…r`) and doing `freq[(unsigned char)s[i]]++`.  
-4. **Scan** `freq[ ]` (size 256) to check if there are exactly two nonzero entries with equal counts.  
-5. **Update** `ans` if the window is “balanced.”
+5. **Scan** `freq[ ]` (size 256) to check if there are exactly two nonzero entries with equal counts.  
+6. **Update** `ans` if the window is “balanced.”
 
 ---
 
