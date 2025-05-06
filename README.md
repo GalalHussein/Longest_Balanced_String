@@ -60,7 +60,7 @@ Function solve:
 
     return ans;
     // print the ans, it contains the maximum length of Balanced String.
-} ```
+} 
 
 
 ## Implementation with c language.
