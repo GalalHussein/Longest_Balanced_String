@@ -1,6 +1,7 @@
 # Longest Balanced String Task (cs helwan 2025).
 
 ## psudo code
+```
 Function solve:
     Input: string s
     n ← length of s
@@ -59,4 +60,4 @@ Function solve:
 
     return ans;
     // print the ans, it contains the maximum length of Balanced String.
-}
+} ```
