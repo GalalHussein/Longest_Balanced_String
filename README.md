@@ -160,3 +160,177 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 
 **Space Complexity:** **O(n)** (dominated by the input string)  
 
+---
+
+# Balanced Substring Algorithm (CS helwan 2025).
+
+## Pseudo code
+```
+Function solve:
+    Input: string s
+    n ← length of s
+
+   algorithm solve(s, n) // s is a string of length n
+{
+    ans := 0;
+    // initialize variable answer to minimum possible value.
+    // We will maximize the length with the variable ans.
+
+    for c1 := 'a' to 'z' step 1 do
+        // Try all possible pairs of lowercase letters
+        for c2 := c1 + 1 to 'z' step 1 do
+            // Try all pairs where c2 > c1 to avoid duplicates
+            
+            i := 0;
+            while i < n do
+                // Skip characters that aren't c1 or c2
+                while i < n AND s[i] ≠ c1 AND s[i] ≠ c2 do
+                    i := i + 1;
+                
+                // Process the segment containing only c1 and c2
+                firstIdx := empty hashmap;
+                firstIdx[0] := 0;
+                sum := 0;
+                len := 0;
+                
+                while i + len < n AND (s[i + len] = c1 OR s[i + len] = c2) do
+                    // Increment sum by 1 for c1, decrement by 1 for c2
+                    if s[i + len] = c1 then
+                        sum := sum + 1;
+                    else
+                        sum := sum - 1;
+                    
+                    len := len + 1;
+                    
+                    // If we haven't seen this sum before, record its first occurrence
+                    if sum is not in firstIdx then
+                        firstIdx[sum] := len;
+                    else
+                        // If we've seen this sum before, we have a balanced substring
+                        ans := max(ans, len - firstIdx[sum]);
+                
+                i := i + len;  // Move to the next segment
+    
+    return ans;
+    // Return the maximum length of balanced substring
+}
+```
+
+## Implementation with C++ language.
+```cpp
+#include <iostream>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+int max (int a, int b) {
+    return a > b ? a : b;
+}
+
+void solve() {
+    string s;
+    cin >> s;
+    int n = s.size(), ans = 0;
+    // Enumerate all pairs of distinct lowercase letters
+    for (char c1 = 'a'; c1 <= 'z'; ++c1) {
+        for (char c2 = c1 + 1; c2 <= 'z'; ++c2) {
+            int i = 0;
+            while (i < n) {
+                // Skip chars outside {c1,c2}
+                while (i < n && s[i] != c1 && s[i] != c2)
+                    ++i;
+                // Process the segment
+                unordered_map<int,int> firstIdx;
+                firstIdx[0] = 0;
+                int sum = 0, len = 0;
+                while (i + len < n && (s[i + len] == c1 || s[i + len] == c2)) {
+                    sum += (s[i + len] == c1 ? 1 : -1);
+                    ++len;
+                    if (!firstIdx.count(sum))
+                        firstIdx[sum] = len;
+                    else
+                        ans = max(ans, len - firstIdx[sum]);
+                }
+                i += len;
+            }
+        }
+    }
+
+    cout << ans;
+}
+
+int main() {
+    solve();
+    return 0;
+}
+```
+
+## Analysis
+
+The function `solve()` takes a string `s` (length `n`) and finds the longest substring containing **exactly two distinct characters with equal frequency**. Unlike the previous algorithm which uses a sliding window approach, this algorithm uses a **prefix sum technique** for each pair of distinct characters. It works as follows:
+
+1. **Try every possible pair of lowercase letters** `c1` and `c2` (where `c1 < c2`).
+2. **Process the string** for each pair:
+   - Skip characters that aren't `c1` or `c2`.
+   - For segments containing only `c1` and `c2`, use a **running sum** approach:
+     - Assign `+1` for `c1` and `-1` for `c2`.
+     - If the running sum equals zero at any point, the substring is balanced.
+     - If the same sum appears twice, the substring between those positions is balanced.
+
+![Prefix Sum Approach](./prefixSum.gif)
+
+### Example:
+With string "aabbaabb" and the pair (a,b):
+- We assign +1 for 'a' and -1 for 'b'
+- The running sum becomes: [1,2,1,0,1,2,1,0]
+- When we see the sum 0, we know we have a balanced substring
+- When we see a repeat sum (like 1 appearing multiple times), the substring between those positions is also balanced
+
+---
+
+### Time Complexity
+
+- **Outer loops** over character pairs: **O(26²) = O(1)** (constant)
+- **Processing the string** for each pair: **O(n)**
+- **Hash map operations**: **O(1)** average case
+
+**Overall Time Complexity:** **O(n)** for each pair, and since there are O(1) pairs, the total is **O(n)**
+
+---
+
+### Space Complexity
+
+- **Input string** `s`: **O(n)**
+- **Hash map** `firstIdx`: **O(n)** in the worst case
+- **Scalars** (`n, ans, i, sum, len`): **O(1)**
+
+**Space Complexity:** **O(n)**
+
+---
+
+### Key Differences from Previous Algorithm
+
+1. **Approach**: Uses prefix sums instead of sliding windows
+2. **Efficiency**: O(n) vs O(n³) time complexity
+3. **Implementation**: Uses a hash map to track sum occurrences rather than frequency counting
+4. **Character selection**: Explicitly tries all letter pairs rather than examining all substrings
+
+---
+
+## Comparison Between the Two Algorithms
+
+| Feature                     | Sliding Window Algorithm       | Prefix Sum Algorithm          |
+|-----------------------------|--------------------------------|--------------------------------|
+| **Approach**                | Sliding window with frequency counting | Prefix sum with hash map       |
+| **Time Complexity**         | O(n³)                         | O(n)                          |
+| **Space Complexity**        | O(n)                          | O(n)                          |
+| **Efficiency**              | Less efficient for large inputs | Highly efficient for large inputs |
+| **Character Selection**     | Examines all substrings       | Explicitly tries all letter pairs |
+| **Implementation Complexity** | Moderate                     | Slightly more complex          |
+| **Use Case**                | Suitable for small strings    | Suitable for large strings     |
+
+### Key Takeaways
+- The **Sliding Window Algorithm** is simpler to understand and implement but becomes computationally expensive for larger strings due to its cubic time complexity.
+- The **Prefix Sum Algorithm** is significantly faster and more efficient, especially for large inputs, but requires a deeper understanding of prefix sums and hash maps.
+- For practical applications, the **Prefix Sum Algorithm** is generally preferred due to its linear time complexity.
+- The choice of algorithm depends on the input size and the need for computational efficiency.
