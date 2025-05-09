@@ -216,21 +216,23 @@ Function solve:
 }
 ```
 
-## Implementation with C++ language.
-```cpp
-#include <iostream>
-#include <string>
-#include <unordered_map>
-using namespace std;
+## Implementation with C language.
+```c
+#include <stdio.h>
+#include <string.h>
 
-int max (int a, int b) {
+#define MAX_N 100000
+#define OFFSET 100000 // To handle negative sums in the array
+
+int max(int a, int b) {
     return a > b ? a : b;
 }
 
 void solve() {
-    string s;
-    cin >> s;
-    int n = s.size(), ans = 0;
+    char s[MAX_N + 1];
+    scanf("%s", s);
+    int n = strlen(s), ans = 0;
+    
     // Enumerate all pairs of distinct lowercase letters
     for (char c1 = 'a'; c1 <= 'z'; ++c1) {
         for (char c2 = c1 + 1; c2 <= 'z'; ++c2) {
@@ -239,24 +241,32 @@ void solve() {
                 // Skip chars outside {c1,c2}
                 while (i < n && s[i] != c1 && s[i] != c2)
                     ++i;
+                
                 // Process the segment
-                unordered_map<int,int> firstIdx;
-                firstIdx[0] = 0;
+                int firstIdx[2 * OFFSET + 1]; // Array to store first occurrence of each sum
+                for (int j = 0; j <= 2 * OFFSET; j++) {
+                    firstIdx[j] = -1; // Initialize with -1 (not seen)
+                }
+                firstIdx[OFFSET] = 0; // Sum 0 starts at position 0
+                
                 int sum = 0, len = 0;
                 while (i + len < n && (s[i + len] == c1 || s[i + len] == c2)) {
                     sum += (s[i + len] == c1 ? 1 : -1);
                     ++len;
-                    if (!firstIdx.count(sum))
-                        firstIdx[sum] = len;
-                    else
-                        ans = max(ans, len - firstIdx[sum]);
+                    
+                    // Check if we've seen this sum before
+                    if (firstIdx[sum + OFFSET] == -1) {
+                        firstIdx[sum + OFFSET] = len;
+                    } else {
+                        ans = max(ans, len - firstIdx[sum + OFFSET]);
+                    }
                 }
                 i += len;
             }
         }
     }
 
-    cout << ans;
+    printf("%d", ans);
 }
 
 int main() {
@@ -292,7 +302,7 @@ With string "aabbaabb" and the pair (a,b):
 
 - **Outer loops** over character pairs: **O(26²) = O(1)** (constant)
 - **Processing the string** for each pair: **O(n)**
-- **Hash map operations**: **O(1)** average case
+- **Array access operations**: **O(1)** constant time
 
 **Overall Time Complexity:** **O(n)** for each pair, and since there are O(1) pairs, the total is **O(n)**
 
@@ -301,36 +311,31 @@ With string "aabbaabb" and the pair (a,b):
 ### Space Complexity
 
 - **Input string** `s`: **O(n)**
-- **Hash map** `firstIdx`: **O(n)** in the worst case
+- **Array** `firstIdx`: **O(OFFSET)** which is a constant
 - **Scalars** (`n, ans, i, sum, len`): **O(1)**
 
-**Space Complexity:** **O(n)**
-
----
-
-### Key Differences from Previous Algorithm
-
-1. **Approach**: Uses prefix sums instead of sliding windows
-2. **Efficiency**: O(n) vs O(n³) time complexity
-3. **Implementation**: Uses a hash map to track sum occurrences rather than frequency counting
-4. **Character selection**: Explicitly tries all letter pairs rather than examining all substrings
+**Space Complexity:** **O(n)** for the input string and **O(1)** for the additional data structures
 
 ---
 
 ## Comparison Between the Two Algorithms
 
-| Feature                     | Sliding Window Algorithm       | Prefix Sum Algorithm          |
-|-----------------------------|--------------------------------|--------------------------------|
-| **Approach**                | Sliding window with frequency counting | Prefix sum with hash map       |
-| **Time Complexity**         | O(n³)                         | O(n)                          |
-| **Space Complexity**        | O(n)                          | O(n)                          |
-| **Efficiency**              | Less efficient for large inputs | Highly efficient for large inputs |
-| **Character Selection**     | Examines all substrings       | Explicitly tries all letter pairs |
-| **Implementation Complexity** | Moderate                     | Slightly more complex          |
-| **Use Case**                | Suitable for small strings    | Suitable for large strings     |
+| Feature                     | Sliding Window Algorithm          | Prefix Sum Algorithm             |
+|-----------------------------|------------------------------------|-----------------------------------|
+| **Approach**                | Sliding window with frequency array | Prefix sum with hashmap/array    |
+| **Time Complexity**         | O(n³)                             | O(n)                             |
+| **Space Complexity**        | O(n)                              | O(n)                             |
+| **Efficiency**              | Less efficient for large inputs   | Highly efficient for large inputs|
+| **Implementation Complexity** | Moderate                         | Slightly more complex            |
+| **Scalability**             | Limited due to cubic complexity   | Scales well with linear complexity|
+| **Use Case**                | Suitable for smaller strings      | Suitable for larger strings      |
 
-### Key Takeaways
-- The **Sliding Window Algorithm** is simpler to understand and implement but becomes computationally expensive for larger strings due to its cubic time complexity.
-- The **Prefix Sum Algorithm** is significantly faster and more efficient, especially for large inputs, but requires a deeper understanding of prefix sums and hash maps.
-- For practical applications, the **Prefix Sum Algorithm** is generally preferred due to its linear time complexity.
-- The choice of algorithm depends on the input size and the need for computational efficiency.
+### Key Differences
+1. **Time Complexity**: The sliding window algorithm has a cubic time complexity, making it less efficient for large strings. In contrast, the prefix sum algorithm achieves linear time complexity, making it significantly faster.
+2. **Space Usage**: Both algorithms use O(n) space, but the prefix sum algorithm uses additional constant space for the hashmap/array to store prefix sums.
+3. **Implementation**: The sliding window algorithm is easier to implement and understand, while the prefix sum algorithm requires careful handling of prefix sums and indices.
+4. **Performance**: For large inputs, the prefix sum algorithm is the preferred choice due to its linear time complexity.
+
+### Recommendation
+- Use the **Sliding Window Algorithm** for smaller input sizes or when simplicity is a priority.
+- Use the **Prefix Sum Algorithm** for larger input sizes where performance is critical.
