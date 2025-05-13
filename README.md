@@ -288,3 +288,35 @@ int main() {
 
 ## Analysis
 
+Let n be the length of the input string s.
+###1. High-level structure
+1.  scanAllLengths(len)
+  Recursively tries every window size len from 0 up to n–1.
+  For each len, it calls SlideWindow(0, len).
+2. SlideWindow(l, len)
+  Slides a window of fixed size len+1 across the string by recursively incrementing l from 0 up to n–len–1.
+  For each window s[l..r], it:
+   1. Builds a frequency array freq[256] in O(len+1) time.
+   2. Scans the 256-entry array to count distinct characters (up to 3) in O(256) = O(1) time.
+   3. Possibly updates the global answer.
+
+###2.Time Complexity
+Inner work per window:
+  - Building freq: O(len+1)
+  - Scanning freq[256]: O(1)
+    =>  O(len) total.
+Number of windows of size (len+1):
+ Positions l = 0 to l = n–(len+1) → (n–len) windows.    
+
+###Total cost: 
+![rec](https://github.com/user-attachments/assets/dda422eb-11a1-4fdc-800e-f6cf309e3bd0)
+
+###3. Space Complexity
+Frequency array: freq[256] ⇒ O(1) auxiliary space.
+Call stack:
+  - scanAllLengths recurses to depth ≈ n.
+  - SlideWindow recurses to depth ≈ n (in the worst case when len ≈ n).
+  => Combined maximum recursion depth O(n).
+
+
+
