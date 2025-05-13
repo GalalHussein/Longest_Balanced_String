@@ -309,7 +309,8 @@ Number of windows of size (len+1):
  Positions l = 0 to l = n–(len+1) → (n–len) windows.    
 
 ##Total cost: 
-![rec](https://github.com/user-attachments/assets/dda422eb-11a1-4fdc-800e-f6cf309e3bd0)
+![iteration](https://github.com/user-attachments/assets/1c78d28c-b8db-4838-a9f2-6ecb480d4cad)
+
 
 ##3. Space Complexity
 Frequency array: freq[256] ⇒ O(1) auxiliary space.
