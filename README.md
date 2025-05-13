@@ -162,8 +162,7 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 
 ---
 
-# Balanced Substring Algorithm (CS helwan 2025).
-## recursive
+#  Recursive algorithms
 ## Pseudo code
 ```
 // Global variables
