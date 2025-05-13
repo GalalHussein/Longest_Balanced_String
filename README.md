@@ -299,7 +299,7 @@ Let n be the length of the input string s.
    2. Scans the 256-entry array to count distinct characters (up to 3) in O(256) = O(1) time.
    3. Possibly updates the global answer.
 
-##2.Time Complexity
+## 2.Time Complexity
 Inner work per window:
   - Building freq: O(len+1)
   - Scanning freq[256]: O(1)
@@ -311,7 +311,7 @@ Number of windows of size (len+1):
 ![iteration](https://github.com/user-attachments/assets/1c78d28c-b8db-4838-a9f2-6ecb480d4cad)
 
 
-##3. Space Complexity
+## 3. Space Complexity
 Frequency array: freq[256] ⇒ O(1) auxiliary space.
 Call stack:
   - scanAllLengths recurses to depth ≈ n.
