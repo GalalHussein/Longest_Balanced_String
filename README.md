@@ -112,7 +112,7 @@ The freq map stores character frequencies, but since we're dealing with a limite
 The distinct vector stores at most 2 characters before breaking out of the inner loop
 Therefore, space usage is independent of the input size: O(1)
 
-##Non-recursive Algorithm
+## Another Non-recursive Algorithm
 ## psudo code
 ```
 Function solve:
