@@ -1,5 +1,118 @@
 # Longest Balanced String Task (CS helwan 2025).
 ## Non-recursive Algorithm
+## psudo code 
+```
+Function LBS:
+    Input: string s
+    n ← length of s
+
+    algorithm LBS(s, n)
+{
+    maxLength := 0
+    // Initialize maxLength to track the longest valid balanced substring
+
+    for i := 0 to n - 1 step 1 do
+        // Try every possible starting point of the substring
+
+        freq[256] := array of zeros
+        // Frequency array for characters
+        uniqueChars := empty list
+        // List to store distinct characters seen in current substring
+
+        for j := i to n - 1 step 1 do
+            // Try to extend the substring from i to j
+
+            currentChar := s[j]
+            freq[ASCII(currentChar)] := freq[ASCII(currentChar)] + 1
+
+            if freq[ASCII(currentChar)] = 1 then
+                // New character encountered
+                append currentChar to uniqueChars
+
+            if size of uniqueChars = 2 then
+                // Only check when we have exactly 2 unique characters
+                a := ASCII(uniqueChars[0])
+                b := ASCII(uniqueChars[1])
+
+                if freq[a] = freq[b] then
+                    // Frequencies match — it's a balanced substring
+                    maxLength := max(maxLength, j - i + 1)
+
+            if size of uniqueChars > 2 then
+                // More than 2 unique characters — invalid window
+                break
+
+    return maxLength
+    // maxLength holds the maximum length of a valid balanced substring
+}
+```
+## Implementation with c++ language.
+``` cpp
+
+#include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int LBS(const string& s) {
+    int n = s.length(), maxLength = 0;
+
+    // Try all possible starting positions
+    for (int i = 0; i < n; i++) {
+        unordered_map<char, int> freq;
+        vector<char> uniqe;
+
+        // Try to extend substring from i
+        for (int j = i; j < n; j++) {
+            freq[s[j]]++;
+
+            // If this is a new character, add it to distinct
+            if (freq[s[j]] == 1) {
+                uniqe.push_back(s[j]);
+            }
+
+            // If we have exactly 2 distinct characters
+            if (uniqe.size() == 2) {
+                // Check if frequencies are equal
+                if (freq[uniqe[0]] == freq[uniqe[1]]) {
+                    maxLength = max(maxLength, j - i + 1);
+                }
+            }
+
+            // If we have more than 2 distinct characters, break
+            if (uniqe.size() > 2) break;
+        }
+    }
+    return maxLength;
+}
+
+int main() {
+    string s; cin >> s;
+    cout << LBS(s);
+
+    return 0;
+}
+```
+
+## Analysis
+Brute force
+Time Complexity: O(n²)
+
+We have two nested loops: the outer loop iterates through each starting position (O(n))
+For each starting position, the inner loop potentially extends to the end of the string (O(n))
+The operations inside these loops (hash map operations, checking frequencies) are O(1) amortized
+Overall: O(n²)
+
+Space Complexity: O(1)
+
+The freq map stores character frequencies, but since we're dealing with a limited character set (at most 26 lowercase letters), this is bounded by a constant
+The distinct vector stores at most 2 characters before breaking out of the inner loop
+Therefore, space usage is independent of the input size: O(1)
+
+##Non-recursive Algorithm
 ## psudo code
 ```
 Function solve:
@@ -116,7 +229,7 @@ void solve() {
 ```
 
 ## Analysis
-
+Brute force
 The function `solve()` scans a C‑string `s` (length `n`) and finds the longest substring (“window”) containing **exactly two distinct characters**, each occurring the **same number of times**. It works as follows:
 
 1. **Try every window length** `j = 1…n–1`.  
