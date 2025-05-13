@@ -166,176 +166,125 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 
 ## Pseudo code
 ```
-Function solve:
-    Input: string s
-    n ← length of s
+// Global variables
+ans ← 0
+n ← length(s)
+s ← input string
 
-   algorithm solve(s, n) // s is a string of length n
-{
-    ans := 0;
-    // initialize variable answer to minimum possible value.
-    // We will maximize the length with the variable ans.
+// Examine every substring of fixed length ‘len’ by sliding from left to right
+FUNCTION SlideWindow(l, len):
+    r ← l + len
+    IF r ≥ n THEN
+        RETURN
 
-    for c1 := 'a' to 'z' step 1 do
-        // Try all possible pairs of lowercase letters
-        for c2 := c1 + 1 to 'z' step 1 do
-            // Try all pairs where c2 > c1 to avoid duplicates
-            
-            i := 0;
-            while i < n do
-                // Skip characters that aren't c1 or c2
-                while i < n AND s[i] ≠ c1 AND s[i] ≠ c2 do
-                    i := i + 1;
-                
-                // Process the segment containing only c1 and c2
-                firstIdx := empty hashmap;
-                firstIdx[0] := 0;
-                sum := 0;
-                len := 0;
-                
-                while i + len < n AND (s[i + len] = c1 OR s[i + len] = c2) do
-                    // Increment sum by 1 for c1, decrement by 1 for c2
-                    if s[i + len] = c1 then
-                        sum := sum + 1;
-                    else
-                        sum := sum - 1;
-                    
-                    len := len + 1;
-                    
-                    // If we haven't seen this sum before, record its first occurrence
-                    if sum is not in firstIdx then
-                        firstIdx[sum] := len;
-                    else
-                        // If we've seen this sum before, we have a balanced substring
-                        ans := max(ans, len - firstIdx[sum]);
-                
-                i := i + len;  // Move to the next segment
-    
-    return ans;
-    // Return the maximum length of balanced substring
-}
+    // Count character frequencies in s[l..r]
+    freq ← array[256] of 0
+    FOR i FROM l TO r DO
+        freq[ s[i] ] ← freq[ s[i] ] + 1
+
+    // Determine how many distinct characters, and their counts
+    countDistinct ← 0
+    val1 ← 0
+    val2 ← 0
+    FOR each character c IN 0..255 DO
+        IF freq[c] > 0 THEN
+            countDistinct ← countDistinct + 1
+            IF countDistinct = 1 THEN
+                val1 ← freq[c]
+            ELSE IF countDistinct = 2 THEN
+                val2 ← freq[c]
+            ELSE
+                BREAK   // more than 2 distinct → invalid
+            END IF
+        END IF
+    END FOR
+
+    // Check validity: exactly two distinct chars with equal counts
+    IF countDistinct = 2 AND val1 = val2 THEN
+        ans ← max(ans, len + 1)
+    END IF
+
+    // Recurse by moving window one position right
+    CALL SlideWindow(l + 1, len)
+END FUNCTION
+
+
+
+// Try every possible window size from 0 up to n−1
+FUNCTION scanAllLengths(len):
+    IF len ≥ n THEN
+        RETURN
+
+    CALL SlideWindow(0, len)
+    CALL scanAllLengths(len + 1)
+END FUNCTION
+
+
+
+// Driver
+READ s
+n ← length(s)
+CALL scanAllLengths(0)
+PRINT ans
+
 ```
 
-## Implementation with C language.
-```c
-#include <stdio.h>
-#include <string.h>
+## Implementation with C++ language.
+```c++
+#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
 
-#define MAX_N 100000
-#define OFFSET 100000 // To handle negative sums in the array
 
-int max(int a, int b) {
-    return a > b ? a : b;
-}
+// init Glopal variable, to be easy to track.
+int ans = 0, n;
+string s;
 
-void solve() {
-    char s[MAX_N + 1];
-    scanf("%s", s);
-    int n = strlen(s), ans = 0;
-    
-    // Enumerate all pairs of distinct lowercase letters
-    for (char c1 = 'a'; c1 <= 'z'; ++c1) {
-        for (char c2 = c1 + 1; c2 <= 'z'; ++c2) {
-            int i = 0;
-            while (i < n) {
-                // Skip chars outside {c1,c2}
-                while (i < n && s[i] != c1 && s[i] != c2)
-                    ++i;
-                
-                // Process the segment
-                int firstIdx[2 * OFFSET + 1]; // Array to store first occurrence of each sum
-                for (int j = 0; j <= 2 * OFFSET; j++) {
-                    firstIdx[j] = -1; // Initialize with -1 (not seen)
-                }
-                firstIdx[OFFSET] = 0; // Sum 0 starts at position 0
-                
-                int sum = 0, len = 0;
-                while (i + len < n && (s[i + len] == c1 || s[i + len] == c2)) {
-                    sum += (s[i + len] == c1 ? 1 : -1);
-                    ++len;
-                    
-                    // Check if we've seen this sum before
-                    if (firstIdx[sum + OFFSET] == -1) {
-                        firstIdx[sum + OFFSET] = len;
-                    } else {
-                        ans = max(ans, len - firstIdx[sum + OFFSET]);
-                    }
-                }
-                i += len;
-            }
+// this function move on the string with fixed size.
+void SlidWindow (int l, int len) {
+    int r = l + len;     // compute the right boundry.
+    if (r >= n) return;  // base Case.
+
+    int freq[256] = {0}; // init frequency array.
+    for (int i = l; i <= r; i++) freq[s[i]] ++; // memorize the frequency of each letter.
+
+    int count = 0, val1 = 0, val2 = 0;
+    for (int i = 0; i < 256; i++) { // loop on freq array to get info about current segment.
+        if (freq[i] > 0) { // some letter here.
+            count ++;
+            if (count == 1) val1 = freq[i]; // it's fisrt letter.
+            else if (count == 2) val2 = freq[i]; // it's a second letter.
+            else break; // it's more than two letter (not valid), var count now equal exactly 3.
         }
     }
 
-    printf("%d", ans);
+    if (count == 2 and val1 == val2) { // this is valid substring
+        ans = max (ans, len + 1);  // maximize the answer
+    }
+
+    SlidWindow(l + 1, len); // recurse for next segment, with the current fixed size.
 }
 
+
+void scanAllLengths(int len) {
+    if (len >= n) return; // Base Case.
+
+    SlidWindow(0, len); // slide the window with size len Over all string s.
+
+    scanAllLengths(len + 1); // recurse to increase the window.
+}
+
+
+
 int main() {
-    solve();
-    return 0;
+     cin >> s; // reas input
+     n = s.size(); // get the length of string
+     scanAllLengths(1); // start generate all windows, start with size 2, note {size = len + 1}
+     cout << ans; // print what? anwser.
+
 }
 ```
 
 ## Analysis
 
-The function `solve()` takes a string `s` (length `n`) and finds the longest substring containing **exactly two distinct characters with equal frequency**. Unlike the previous algorithm which uses a sliding window approach, this algorithm uses a **prefix sum technique** for each pair of distinct characters. It works as follows:
-
-1. **Try every possible pair of lowercase letters** `c1` and `c2` (where `c1 < c2`).
-2. **Process the string** for each pair:
-   - Skip characters that aren't `c1` or `c2`.
-   - For segments containing only `c1` and `c2`, use a **running sum** approach:
-     - Assign `+1` for `c1` and `-1` for `c2`.
-     - If the running sum equals zero at any point, the substring is balanced.
-     - If the same sum appears twice, the substring between those positions is balanced.
-
-![Prefix Sum Approach](./prefixSum.gif)
-
-### Example:
-With string "aabbaabb" and the pair (a,b):
-- We assign +1 for 'a' and -1 for 'b'
-- The running sum becomes: [1,2,1,0,1,2,1,0]
-- When we see the sum 0, we know we have a balanced substring
-- When we see a repeat sum (like 1 appearing multiple times), the substring between those positions is also balanced
-
----
-
-### Time Complexity
-
-- **Outer loops** over character pairs: **O(26²) = O(1)** (constant)
-- **Processing the string** for each pair: **O(n)**
-- **Array access operations**: **O(1)** constant time
-
-**Overall Time Complexity:** **O(n)** for each pair, and since there are O(1) pairs, the total is **O(n)**
-
----
-
-### Space Complexity
-
-- **Input string** `s`: **O(n)**
-- **Array** `firstIdx`: **O(OFFSET)** which is a constant
-- **Scalars** (`n, ans, i, sum, len`): **O(1)**
-
-**Space Complexity:** **O(n)** for the input string and **O(1)** for the additional data structures
-
----
-
-## Comparison Between the Two Algorithms
-
-| Feature                     | Sliding Window Algorithm          | Prefix Sum Algorithm             |
-|-----------------------------|------------------------------------|-----------------------------------|
-| **Approach**                | Sliding window with frequency array | Prefix sum with hashmap/array    |
-| **Time Complexity**         | O(n³)                             | O(n)                             |
-| **Space Complexity**        | O(n)                              | O(n)                             |
-| **Efficiency**              | Less efficient for large inputs   | Highly efficient for large inputs|
-| **Implementation Complexity** | Moderate                         | Slightly more complex            |
-| **Scalability**             | Limited due to cubic complexity   | Scales well with linear complexity|
-| **Use Case**                | Suitable for smaller strings      | Suitable for larger strings      |
-
-### Key Differences
-1. **Time Complexity**: The sliding window algorithm has a cubic time complexity, making it less efficient for large strings. In contrast, the prefix sum algorithm achieves linear time complexity, making it significantly faster.
-2. **Space Usage**: Both algorithms use O(n) space, but the prefix sum algorithm uses additional constant space for the hashmap/array to store prefix sums.
-3. **Implementation**: The sliding window algorithm is easier to implement and understand, while the prefix sum algorithm requires careful handling of prefix sums and indices.
-4. **Performance**: For large inputs, the prefix sum algorithm is the preferred choice due to its linear time complexity.
-
-### Recommendation
-- Use the **Sliding Window Algorithm** for smaller input sizes or when simplicity is a priority.
-- Use the **Prefix Sum Algorithm** for larger input sizes where performance is critical.
