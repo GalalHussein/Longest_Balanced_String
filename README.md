@@ -1,5 +1,5 @@
 # Longest Balanced String Task (CS helwan 2025).
-## non-recursive
+## Non-recursive Algorithms
 ## psudo code
 ```
 Function solve:
