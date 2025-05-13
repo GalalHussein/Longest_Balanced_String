@@ -431,5 +431,40 @@ Call stack:
   - SlideWindow recurses to depth ≈ n (in the worst case when len ≈ n).
   => Combined maximum recursion depth O(n).
 
+## Comparison first and last algorithms
 
+Implementation Approach:
+
+Algorithm 1: Iterative with nested loops
+Algorithm 2: Recursive with two levels of recursion
+
+
+Time Complexity:
+
+Algorithm 1: O(n²)
+Algorithm 2: O(n³) - less efficient due to recursive exploration of all possible window sizes
+
+
+Space Complexity:
+
+Algorithm 1: O(1) constant space
+Algorithm 2: O(n) due to recursion stack
+
+
+Frequency Tracking:
+
+Algorithm 1: unordered_map<char, int> (hash table)
+Algorithm 2: Fixed array of size 256
+
+
+Early Termination:
+
+Algorithm 1: Breaks when more than 2 distinct characters are found
+Algorithm 2: Always processes the full window
+
+
+State Management:
+
+Algorithm 1: Local variables
+Algorithm 2: Global variables
 
