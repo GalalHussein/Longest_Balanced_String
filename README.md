@@ -1,5 +1,5 @@
 # Longest Balanced String Task (CS helwan 2025).
-## Non-recursive Algorithms
+## Non-recursive Algorithm
 ## psudo code
 ```
 Function solve:
@@ -162,7 +162,7 @@ Sum over j=1..n-1 of [ O(n) * (O(j) + O(1)) ]
 
 ---
 
-#  Recursive algorithms
+#  Recursive algorithm
 ## Pseudo code
 ```
 // Global variables
